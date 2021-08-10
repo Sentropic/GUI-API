@@ -45,6 +45,7 @@ public class GUI {
             GUIComponent component = iterator.next();
             if (component.getId().equals(id)) {
                 iterator.set(guiComponent);
+                changed = true;
                 success = true;
                 break;
             }

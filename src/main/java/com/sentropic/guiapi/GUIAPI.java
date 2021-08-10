@@ -46,5 +46,6 @@ public final class GUIAPI extends JavaPlugin {
     }
 
     public static GUIAPI getPlugin() { return singleton; }
+
     public static GUIManager getGUIManager() { return guiManager; }
 }

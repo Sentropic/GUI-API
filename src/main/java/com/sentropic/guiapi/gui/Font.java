@@ -60,9 +60,14 @@ public class Font {
     }
 
     public int getWidth(char character, boolean custom) {
-        int result = this == DEFAULT ?
-                widths.getOrDefault(character, 6) :
-                widths.getOrDefault(character, DEFAULT.getWidth(character, custom));
+        int result;
+        if (this == DEFAULT) {
+            result = widths.getOrDefault(character, 6);
+        } else {
+            result = widths == null ?
+                    DEFAULT.getWidth(character, custom) :
+                    widths.getOrDefault(character, DEFAULT.getWidth(character, custom));
+        }
         if (!custom) {
             result = Math.round(result*height/8f); // Scale
         }

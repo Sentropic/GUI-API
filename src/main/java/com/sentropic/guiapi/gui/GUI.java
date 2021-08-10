@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 public class GUI {
     public static boolean sendingPacket = false;
@@ -87,6 +88,10 @@ public class GUI {
         boolean success = guiComponents.removeIf(guiComponent -> guiComponent.getId().equals(id));
         changed = success || changed;
         return success;
+    }
+
+    public boolean removeIf(Predicate<GUIComponent> predicate) {
+        return guiComponents.removeIf(predicate);
     }
 
     private void build() {

@@ -17,6 +17,8 @@ public final class GUIAPI extends JavaPlugin {
     @Override
     public void onEnable() {
         if (singleton != null) { throw new IllegalStateException(); }
+        singleton = this;
+
         saveDefaultConfig();
         reloadConfig();
         // TODO add config for character widths
@@ -28,8 +30,6 @@ public final class GUIAPI extends JavaPlugin {
         protocolManager = ProtocolLibrary.getProtocolManager();
         packetListener = new PacketListener(this, PacketType.Play.Server.TITLE);
         protocolManager.addPacketListener(packetListener);
-
-        singleton = this;
     }
 
     @Override
@@ -46,6 +46,5 @@ public final class GUIAPI extends JavaPlugin {
     }
 
     public static GUIAPI getPlugin() { return singleton; }
-
-    public static GUIManager getGuiManager() { return guiManager; }
+    public static GUIManager getGUIManager() { return guiManager; }
 }

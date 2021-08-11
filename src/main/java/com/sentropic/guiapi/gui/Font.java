@@ -1,9 +1,11 @@
 package com.sentropic.guiapi.gui;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class Font {
 
@@ -29,7 +31,7 @@ public class Font {
     public static Font ofName(String name) { return registeredFonts.get(name); }
 
     public static void register(Font font) {
-        String name = font.getName();
+        String name = font.getID();
         if (registeredFonts.containsKey(name)) {
             throw new IllegalArgumentException("Font \""+name+"\" already exists");
         }
@@ -44,12 +46,12 @@ public class Font {
 
     // Instance code
 
-    private final String name;
+    private final String id;
     private final int height;
     private Map<Character,Integer> widths;
 
-    public Font(String name, int height) {
-        this.name = name;
+    public Font(@NotNull String id, int height) {
+        this.id = id;
         if (height < 5) { height += 1; } // Correction necessary for some reason
         this.height = height;
     }
@@ -59,32 +61,32 @@ public class Font {
         widths.put(character, width);
     }
 
-    public int getWidth(char character, boolean custom) {
+    public int getWidth(char character, boolean scale) {
         int result;
         if (this == DEFAULT) {
             result = widths.getOrDefault(character, 6);
         } else {
             result = widths == null ?
-                    DEFAULT.getWidth(character, custom) :
-                    widths.getOrDefault(character, DEFAULT.getWidth(character, custom));
+                    DEFAULT.getWidth(character, scale) :
+                    widths.getOrDefault(character, DEFAULT.getWidth(character, scale));
         }
-        if (!custom) {
+        if (!scale) {
             result = Math.round(result*height/8f); // Scale
         }
         return result;
     }
 
-    public int getWidth(String text) {
+    public int getWidth(String text, boolean scale) {
         if (text.equals("")) { return 0; }
         int total = 0;
-        for (char character : text.toCharArray()) { total += getWidth(character, false); }
+        for (char character : text.toCharArray()) { total += getWidth(character, scale); }
         return total;
     }
 
     @Override
-    public String toString() { return name; }
+    public String toString() { return id; }
 
-    public String getName() { return name; }
+    public String getID() { return id; }
 
     public int getHeight() { return height; }
 }

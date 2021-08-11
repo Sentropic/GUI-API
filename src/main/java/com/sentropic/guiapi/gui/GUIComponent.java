@@ -12,55 +12,26 @@ public class GUIComponent {
     private final int leftOffset;
     private final int rightOffset;
 
-    public enum Alignment {LEFT, RIGHT, CENTERED}
-
-    public GUIComponent(@NotNull String id,
-                        int offset,
-                        char character,
-                        Font font,
-                        @NotNull Alignment alignment) {
-        this.id = id;
-        this.text = String.valueOf(character);
-        this.font = font;
-
-        int width = font.getWidth(character, true);
-        switch (alignment) {
-            case LEFT:
-                this.leftOffset = offset;
-                this.rightOffset = -offset-width;
-                break;
-            case RIGHT:
-                this.leftOffset = offset-width;
-                this.rightOffset = -offset;
-                break;
-            case CENTERED:
-                this.leftOffset = offset-width/2;
-                this.rightOffset = -this.leftOffset-width;
-                break;
-            default:
-                throw new IllegalArgumentException();
-        }
-    }
-
     public GUIComponent(@NotNull String id,
                         int offset,
                         @NotNull String text,
                         Font font,
-                        @NotNull Alignment alignment) {
+                        @NotNull Alignment alignment,
+                        boolean scale) {
         this.id = id;
         this.text = text;
         this.font = font;
         switch (alignment) {
             case LEFT:
                 this.leftOffset = offset;
-                this.rightOffset = -offset-font.getWidth(text);
+                this.rightOffset = -offset-font.getWidth(text, scale);
                 break;
             case RIGHT:
-                this.leftOffset = offset-font.getWidth(text);
+                this.leftOffset = offset-font.getWidth(text, scale);
                 this.rightOffset = -offset;
                 break;
-            case CENTERED:
-                int width = font.getWidth(text);
+            case CENTER:
+                int width = font.getWidth(text, scale);
                 this.leftOffset = offset-width/2;
                 this.rightOffset = -this.leftOffset-width;
                 break;
@@ -92,7 +63,7 @@ public class GUIComponent {
         return list;
     }
 
-    public String getId() { return id; }
+    public String getID() { return id; }
 
     public String getText() { return text; }
 

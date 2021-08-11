@@ -1,0 +1,9 @@
+debug:
+  1:
+    offset: 0
+    text: Debug text
+    font:
+      id: minecraft:default
+      height: 8
+    alignment: left
+    scale: true

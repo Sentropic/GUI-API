@@ -2,7 +2,10 @@ package com.sentropic.guiapi.gui;
 
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
+import com.sentropic.guiapi.GUIAPI;
 import com.sentropic.guiapi.packet.WrapperPlayServerTitle;
+import org.apache.commons.lang.ObjectUtils;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,6 +20,7 @@ public class GUI {
     private String rawJson;
     private boolean changed = true;
     private final WrapperPlayServerTitle packet;
+    private boolean debug = false;
 
     public GUI(Player player) {
         this.player = player;
@@ -27,23 +31,23 @@ public class GUI {
     public Player getPlayer() { return player; }
 
     public void putOnTop(@NotNull GUIComponent guiComponent) {
-        remove(guiComponent.getId());
+        remove(guiComponent.getID());
         guiComponents.add(guiComponent);
         changed = true;
     }
 
     public void putUnderneath(@NotNull GUIComponent guiComponent) {
-        remove(guiComponent.getId());
+        remove(guiComponent.getID());
         guiComponents.add(0, guiComponent);
         changed = true;
     }
 
     public boolean update(@NotNull GUIComponent guiComponent) {
         boolean success = false;
-        String id = guiComponent.getId();
+        String id = guiComponent.getID();
         for (ListIterator<GUIComponent> iterator = guiComponents.listIterator(); iterator.hasNext(); ) {
             GUIComponent component = iterator.next();
-            if (component.getId().equals(id)) {
+            if (component.getID().equals(id)) {
                 iterator.set(guiComponent);
                 changed = true;
                 success = true;
@@ -55,11 +59,11 @@ public class GUI {
 
     public boolean putAfter(String after, @NotNull GUIComponent guiComponent) {
         boolean success = false;
-        remove(guiComponent.getId());
+        remove(guiComponent.getID());
         int i = 0;
         for (GUIComponent component : guiComponents) {
             i++;
-            if (component.getId().equals(after)) {
+            if (component.getID().equals(after)) {
                 guiComponents.add(i, guiComponent);
                 changed = true;
                 success = true;
@@ -71,11 +75,11 @@ public class GUI {
 
     public boolean putBefore(String before, @NotNull GUIComponent guiComponent) {
         boolean success = false;
-        remove(guiComponent.getId());
+        remove(guiComponent.getID());
         int i = -1;
         for (GUIComponent component : guiComponents) {
             i++;
-            if (component.getId().equals(before)) {
+            if (component.getID().equals(before)) {
                 guiComponents.add(i, guiComponent);
                 changed = true;
                 success = true;
@@ -86,13 +90,43 @@ public class GUI {
     }
 
     public boolean remove(String id) {
-        boolean success = guiComponents.removeIf(guiComponent -> guiComponent.getId().equals(id));
+        boolean success = guiComponents.removeIf(guiComponent -> guiComponent.getID().equals(id));
         changed = success || changed;
         return success;
     }
 
     public boolean removeIf(Predicate<GUIComponent> predicate) {
         return guiComponents.removeIf(predicate);
+    }
+
+    public boolean isDebugging() { return debug; }
+
+    private static final String ID_DEBUG = "debug:";
+    public void setDebug(boolean debug) {
+        if (this.debug == debug) { return; }
+        else { this.debug = debug; }
+        if (debug) {
+            List<GUIComponent> debugComponents = new ArrayList<>();
+            ConfigurationSection debugSection = GUIAPI.getPlugin().getConfig().getConfigurationSection("debug");
+            if (debugSection == null) { return; }
+            for (String componentKey : debugSection.getKeys(false)) {
+                try {
+                    ConfigurationSection componentSection = Objects.requireNonNull(debugSection.getConfigurationSection(componentKey));
+                    ConfigurationSection fontSection = Objects.requireNonNull(componentSection.getConfigurationSection("font"));
+
+                    String id = ID_DEBUG+componentKey;
+                    int offset = componentSection.getInt("offset");
+                    String text = Objects.requireNonNull(componentSection.getString("text"));
+                    Font font = new Font(Objects.requireNonNull(fontSection.getString("id")),
+                                         fontSection.getInt("height"));
+                    Alignment alignment = Alignment.valueOf(Objects.requireNonNull(componentSection.getString("alignment")).toUpperCase());
+                    boolean scale = componentSection.getBoolean("scale", true);
+
+                    debugComponents.add(new GUIComponent(id, offset, text, font, alignment, scale));
+                } catch (NullPointerException | IllegalArgumentException ignored) { }
+            }
+            for (GUIComponent component : debugComponents) { putOnTop(component); }
+        } else { removeIf(component -> component.getID().startsWith(ID_DEBUG)); }
     }
 
     private void build() {

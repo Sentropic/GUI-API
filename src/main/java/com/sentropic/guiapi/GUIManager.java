@@ -19,9 +19,8 @@ public class GUIManager implements Listener {
     GUIManager() { task.runTaskTimer(GUIAPI.getPlugin(), 0, 1); }
 
     void close() {
-        try {
-            task.cancel();
-        } catch (IllegalStateException ignored) { }
+        try { task.cancel(); }
+        catch (IllegalStateException ignored) { }
     }
 
     public GUI getGUI(Player player) {

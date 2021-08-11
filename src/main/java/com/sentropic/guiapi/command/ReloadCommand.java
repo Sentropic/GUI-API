@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 public class ReloadCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!sender.hasPermission("misc.command.reload")) { return false; }
         if (args.length == 1 && args[0].equals("reload")) {
             GUIAPI.getPlugin().reloadConfig();
             sender.sendMessage(ChatColor.GREEN+"[GUIAPI] Reloaded config.yml");
@@ -21,7 +22,8 @@ public class ReloadCommand implements CommandExecutor {
             if (sender instanceof Player) {
                 GUI gui = GUIAPI.getGUIManager().getGUI((Player) sender);
                 gui.setDebug(!gui.isDebugging());
-            }
+                return true;
+            } else { sender.sendMessage("Command only runnable ingame"); }
         }
         return false;
     }

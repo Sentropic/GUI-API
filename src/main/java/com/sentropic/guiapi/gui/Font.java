@@ -70,9 +70,7 @@ public class Font {
                     DEFAULT.getWidth(character, scale) :
                     widths.getOrDefault(character, DEFAULT.getWidth(character, scale));
         }
-        if (!scale) {
-            result = Math.round(result*height/8f); // Scale
-        }
+        if (scale) { result = (int) Math.ceil(result*height/8f); }
         return result;
     }
 

@@ -96,7 +96,9 @@ public class GUI {
     }
 
     public boolean removeIf(Predicate<GUIComponent> predicate) {
-        return guiComponents.removeIf(predicate);
+        boolean success = guiComponents.removeIf(predicate);
+        changed = success || changed;
+        return success;
     }
 
     public boolean isDebugging() { return debug; }

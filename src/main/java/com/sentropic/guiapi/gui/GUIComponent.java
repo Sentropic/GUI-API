@@ -18,12 +18,12 @@ public class GUIComponent {
         this(id, offset, text, font.getWidth(text, scale), font, alignment);
     }
 
-    GUIComponent(String id,
-                 int offset,
-                 String text,
-                 int width,
-                 Font font,
-                 Alignment alignment) {
+    public GUIComponent(@NotNull String id,
+                        int offset,
+                        @NotNull String text,
+                        int width,
+                        Font font,
+                        @NotNull Alignment alignment) {
         this.id = id;
         this.text = text;
         this.font = font;

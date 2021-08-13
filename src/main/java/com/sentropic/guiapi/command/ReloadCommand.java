@@ -13,8 +13,8 @@ public class ReloadCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!sender.hasPermission("misc.command.reload")) { return false; }
         if (args.length == 1 && args[0].equals("reload")) {
-            GUIAPI.getPlugin().reloadConfig();
-            sender.sendMessage(ChatColor.GREEN+"[GUIAPI] Reloaded config.yml");
+            GUIAPI.getGUIConfig().reload();
+            sender.sendMessage(ChatColor.GREEN+"[GUI API] Reloaded config.yml");
             return true;
         } else if (args.length == 1 && args[0].equals("debug")) {
             if (sender instanceof Player) {

@@ -1,24 +1,24 @@
 package com.sentropic.guiapi;
 
 import com.sentropic.guiapi.gui.GUI;
-import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 public class GUIManager implements Listener {
     private final Map<Player,GUI> GUIS = new HashMap<>();
+    private final Map<Player,GUI> GUIS_READ = Collections.unmodifiableMap(GUIS);
     private final Task task = new Task();
 
-    //TODO test bigger periods
     GUIManager() { task.runTaskTimer(GUIAPI.getPlugin(), 0, 1); }
 
-    void close() {
+    void disable() {
         try { task.cancel(); } catch (IllegalStateException ignored) { }
     }
 
@@ -30,6 +30,8 @@ public class GUIManager implements Listener {
         }
         return gui;
     }
+
+    public Map<Player,GUI> getGUIS() { return GUIS_READ; }
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent event) { GUIS.remove(event.getPlayer()); }

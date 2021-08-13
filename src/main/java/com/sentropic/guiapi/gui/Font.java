@@ -52,14 +52,14 @@ public class Font {
     }
 
     @Nullable
-    public static Font ofName(String name) { return registeredFonts.get(name); }
+    public static Font getRegistered(String id) { return registeredFonts.get(id); }
 
     public static void register(Font font) {
-        String name = font.getID();
-        if (registeredFonts.containsKey(name)) {
-            throw new IllegalArgumentException("Font \""+name+"\" already exists");
+        String id = font.getID();
+        if (registeredFonts.containsKey(id)) {
+            throw new IllegalArgumentException("Font \""+id+"\" already exists");
         }
-        registeredFonts.put(name, font);
+        registeredFonts.put(id, font);
     }
 
     public static boolean unregister(Font font) {

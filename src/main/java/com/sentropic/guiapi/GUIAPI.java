@@ -11,6 +11,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class GUIAPI extends JavaPlugin {
     private static GUIAPI singleton;
     private static GUIManager guiManager;
+    private static GUIConfig config;
+
     public static ProtocolManager protocolManager;
     private static PacketListener packetListener;
 
@@ -19,13 +21,14 @@ public final class GUIAPI extends JavaPlugin {
         if (singleton != null) { throw new IllegalStateException(); }
         singleton = this;
 
-        saveDefaultConfig();
-        reloadConfig();
-        // TODO add config for character widths
-        this.getCommand("guiapi").setExecutor(new ReloadCommand());
-
         guiManager = new GUIManager();
         getServer().getPluginManager().registerEvents(guiManager, this);
+
+        saveDefaultConfig();
+        config = new GUIConfig();
+
+        // TODO add config for character widths
+        this.getCommand("guiapi").setExecutor(new ReloadCommand());
 
         protocolManager = ProtocolLibrary.getProtocolManager();
         packetListener = new PacketListener(this, PacketType.Play.Server.TITLE);
@@ -35,8 +38,9 @@ public final class GUIAPI extends JavaPlugin {
     @Override
     public void onDisable() {
         HandlerList.unregisterAll(guiManager);
-        guiManager.close();
+        guiManager.disable();
         guiManager = null;
+        config = null;
 
         protocolManager.removePacketListener(packetListener);
         packetListener = null;
@@ -48,4 +52,6 @@ public final class GUIAPI extends JavaPlugin {
     public static GUIAPI getPlugin() { return singleton; }
 
     public static GUIManager getGUIManager() { return guiManager; }
+
+    public static GUIConfig getGUIConfig() { return config; }
 }

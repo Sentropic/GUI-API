@@ -4,7 +4,6 @@ import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.sentropic.guiapi.GUIAPI;
 import com.sentropic.guiapi.packet.WrapperPlayServerTitle;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,6 +19,7 @@ public class GUI {
     private boolean changed = true;
     private final WrapperPlayServerTitle packet;
     private boolean debug = false;
+    private long lastSend = 0;
 
     public GUI(Player player) {
         this.player = player;
@@ -102,37 +102,12 @@ public class GUI {
 
     public boolean isDebugging() { return debug; }
 
-    private static final String ID_DEBUG = "debug:";
+    public static final String ID_DEBUG = "debug:";
 
     public void setDebug(boolean debug) {
         if (this.debug == debug) { return; } else { this.debug = debug; }
         if (debug) {
-            List<GUIComponent> debugComponents = new ArrayList<>();
-            ConfigurationSection debugSection = GUIAPI.getPlugin().getConfig().getConfigurationSection("debug");
-            if (debugSection == null) { return; }
-            for (String componentKey : debugSection.getKeys(false)) {
-                try {
-                    ConfigurationSection componentSection = Objects.requireNonNull(debugSection.getConfigurationSection(componentKey));
-                    ConfigurationSection fontSection = Objects.requireNonNull(componentSection.getConfigurationSection("font"));
-
-                    String id = ID_DEBUG+componentKey;
-                    int offset = componentSection.getInt("offset");
-                    String text = Objects.requireNonNull(componentSection.getString("text"));
-                    int width = componentSection.getInt("width", -1);
-
-                    Font font = new Font(Objects.requireNonNull(fontSection.getString("id")),
-                                         fontSection.getInt("height"));
-                    Alignment alignment = Alignment.valueOf(Objects.requireNonNull(componentSection.getString("alignment")).toUpperCase());
-                    boolean scale = componentSection.getBoolean("scale", true);
-
-                    GUIComponent component;
-                    if (width == -1) { component = new GUIComponent(id, offset, text, font, alignment, scale); } else {
-                        component = new GUIComponent(id, offset, text, width, font, alignment);
-                    }
-                    debugComponents.add(component);
-                } catch (NullPointerException | IllegalArgumentException ignored) { }
-            }
-            for (GUIComponent component : debugComponents) { putOnTop(component); }
+            for (GUIComponent component : GUIAPI.getGUIConfig().getDebugComponents()) { putOnTop(component); }
         } else { removeIf(component -> component.getID().startsWith(ID_DEBUG)); }
     }
 
@@ -176,10 +151,15 @@ public class GUI {
     }
 
     public void play() {
-        if (changed) { build(); }
-        sendingPacket = true;
-        packet.sendPacket(player);
-        sendingPacket = false;
+        long time = System.currentTimeMillis();
+        boolean play = changed || time-lastSend >= GUIAPI.getGUIConfig().getSendPeriod();
+        if (play) {
+            lastSend = time;
+            if (changed) { build(); }
+            sendingPacket = true;
+            packet.sendPacket(player);
+            sendingPacket = false;
+        }
     }
 
     public static String spacesOf(int amount) {

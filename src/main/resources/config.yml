@@ -1,9 +1,15 @@
+send_period_milis: 1900
 debug:
-  1:
+  default:
     offset: 0
-    text: Debug text
+    text: "This text must start at the screen center"
     font:
-      id: minecraft:default
+      id: "minecraft:default"
+    alignment: "left"
+  test:
+    offset: -10
+    text: "Some text"
+    font:
+      id: "minecraft:default"
       height: 8
-    alignment: left
-    scale: true
+    alignment: "right"

@@ -1,9 +1,7 @@
 package com.sentropic.guiapi.command;
 
 import com.sentropic.guiapi.GUIAPI;
-import com.sentropic.guiapi.GUIManager;
 import com.sentropic.guiapi.gui.GUI;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

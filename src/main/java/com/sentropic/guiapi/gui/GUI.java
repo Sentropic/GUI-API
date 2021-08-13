@@ -4,7 +4,6 @@ import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.sentropic.guiapi.GUIAPI;
 import com.sentropic.guiapi.packet.WrapperPlayServerTitle;
-import org.apache.commons.lang.ObjectUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -104,9 +103,9 @@ public class GUI {
     public boolean isDebugging() { return debug; }
 
     private static final String ID_DEBUG = "debug:";
+
     public void setDebug(boolean debug) {
-        if (this.debug == debug) { return; }
-        else { this.debug = debug; }
+        if (this.debug == debug) { return; } else { this.debug = debug; }
         if (debug) {
             List<GUIComponent> debugComponents = new ArrayList<>();
             ConfigurationSection debugSection = GUIAPI.getPlugin().getConfig().getConfigurationSection("debug");
@@ -119,38 +118,43 @@ public class GUI {
                     String id = ID_DEBUG+componentKey;
                     int offset = componentSection.getInt("offset");
                     String text = Objects.requireNonNull(componentSection.getString("text"));
+                    int width = componentSection.getInt("width", -1);
+
                     Font font = new Font(Objects.requireNonNull(fontSection.getString("id")),
                                          fontSection.getInt("height"));
                     Alignment alignment = Alignment.valueOf(Objects.requireNonNull(componentSection.getString("alignment")).toUpperCase());
                     boolean scale = componentSection.getBoolean("scale", true);
 
-                    debugComponents.add(new GUIComponent(id, offset, text, font, alignment, scale));
+                    GUIComponent component;
+                    if (width == -1) { component = new GUIComponent(id, offset, text, font, alignment, scale); } else {
+                        component = new GUIComponent(id, offset, text, width, font, alignment);
+                    }
+                    debugComponents.add(component);
                 } catch (NullPointerException | IllegalArgumentException ignored) { }
             }
             for (GUIComponent component : debugComponents) { putOnTop(component); }
         } else { removeIf(component -> component.getID().startsWith(ID_DEBUG)); }
     }
 
-    private void build() {
+    private void build() { //TODO see if can optimize
         StringBuilder builder = new StringBuilder("[{\"text\":\"");
         int offset = 0;
         Font font = Font.DEFAULT;
-
         for (GUIComponent component : guiComponents) {
-            for (GUIComponent word : component.byWord()) {
-                if (!font.equals(Font.DEFAULT)) {
-                    builder.append("\",\"font\":\"")
-                           .append(font)
-                           .append("\"},{\"text\":\"");
-                }
-                builder.append(spacesOf(offset+word.getLeftOffset()));
-                font = word.getFont();
-                if (!font.equals(Font.DEFAULT)) {
-                    builder.append("\",\"font\":\"minecraft:default\"},{\"text\":\"");
-                }
-                builder.append(word.getText());
-                offset = word.getRightOffset();
+            if (debug && !component.getID().startsWith(ID_DEBUG)) { continue; }
+            if (!font.equals(Font.DEFAULT)) {
+                builder.append("\",\"font\":\"")
+                       .append(font)
+                       .append("\"},{\"text\":\"");
             }
+            String text = component.getText();
+            builder.append(spacesOf(offset+component.getLeftOffset()));
+            offset = component.getRightOffset();
+            font = component.getFont();
+            if (!font.equals(Font.DEFAULT)) {
+                builder.append("\",\"font\":\"minecraft:default\"},{\"text\":\"");
+            }
+            builder.append(text);
         }
 
         if (!font.equals(Font.DEFAULT)) {
@@ -180,9 +184,7 @@ public class GUI {
 
     public static String spacesOf(int amount) {
         Map<Integer,String> spaces;
-        if (amount == 0) { return ""; } else if (amount > 0) {
-            spaces = POS_SPACES;
-        } else {
+        if (amount == 0) { return ""; } else if (amount > 0) { spaces = POS_SPACES; } else {
             amount = -amount;
             spaces = NEG_SPACES;
         }

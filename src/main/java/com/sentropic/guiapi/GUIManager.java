@@ -19,8 +19,7 @@ public class GUIManager implements Listener {
     GUIManager() { task.runTaskTimer(GUIAPI.getPlugin(), 0, 1); }
 
     void close() {
-        try { task.cancel(); }
-        catch (IllegalStateException ignored) { }
+        try { task.cancel(); } catch (IllegalStateException ignored) { }
     }
 
     public GUI getGUI(Player player) {
@@ -38,9 +37,7 @@ public class GUIManager implements Listener {
     public class Task extends BukkitRunnable {
         @Override
         public void run() {
-            GUIS.values().stream()
-                .filter(gui -> !gui.getPlayer().getGameMode().equals(GameMode.CREATIVE))
-                .forEach(GUI::play);
+            GUIS.values().forEach(GUI::play);
         }
     }
 }

@@ -5,7 +5,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class Font {
 
@@ -15,14 +14,39 @@ public class Font {
     private static final Map<String,Font> registeredFonts = new HashMap<>();
 
     static {
-        DEFAULT.registerWidth('I', 4);
+        // Register default char widths (width = horizontal pixels + 1)
+        DEFAULT.registerWidth(' ', 4);
         DEFAULT.registerWidth('f', 5);
         DEFAULT.registerWidth('i', 2);
         DEFAULT.registerWidth('k', 5);
         DEFAULT.registerWidth('l', 3);
         DEFAULT.registerWidth('t', 4);
-        DEFAULT.registerWidth(' ', 4);
+        DEFAULT.registerWidth('I', 4);
+        DEFAULT.registerWidth('í', 3);
+        DEFAULT.registerWidth('Í', 4);
+        DEFAULT.registerWidth('´', 3);
         DEFAULT.registerWidth('.', 2);
+        DEFAULT.registerWidth(',', 2);
+        DEFAULT.registerWidth(';', 2);
+        DEFAULT.registerWidth(':', 2);
+        DEFAULT.registerWidth('[', 4);
+        DEFAULT.registerWidth(']', 4);
+        DEFAULT.registerWidth('{', 4);
+        DEFAULT.registerWidth('}', 4);
+        DEFAULT.registerWidth('*', 4);
+        DEFAULT.registerWidth('!', 2);
+        DEFAULT.registerWidth('¡', 2);
+        DEFAULT.registerWidth('"', 4);
+        DEFAULT.registerWidth('(', 4);
+        DEFAULT.registerWidth(')', 4);
+        DEFAULT.registerWidth('°', 5);
+        DEFAULT.registerWidth('|', 2);
+        DEFAULT.registerWidth('`', 3);
+        DEFAULT.registerWidth('\'', 2);
+        DEFAULT.registerWidth('<', 5);
+        DEFAULT.registerWidth('>', 5);
+        DEFAULT.registerWidth('@', 7);
+        DEFAULT.registerWidth('~', 7);
 
         register(DEFAULT);
     }
@@ -52,7 +76,6 @@ public class Font {
 
     public Font(@NotNull String id, int height) {
         this.id = id;
-        if (height < 5) { height += 1; } // Correction necessary for some reason
         this.height = height;
     }
 
@@ -62,22 +85,22 @@ public class Font {
     }
 
     public int getWidth(char character, boolean scale) {
-        int result;
-        if (this == DEFAULT) {
-            result = widths.getOrDefault(character, 6);
-        } else {
-            result = widths == null ?
-                    DEFAULT.getWidth(character, scale) :
-                    widths.getOrDefault(character, DEFAULT.getWidth(character, scale));
+        Integer result = null;
+        if (this == DEFAULT) { result = widths.getOrDefault(character, 6); } else {
+            try { result = widths.get(character); } catch (NullPointerException ignored) { }
+            if (result == null) { result = DEFAULT.getWidth(character, false); }
         }
-        if (scale) { result = (int) Math.ceil(result*height/8f); }
+        if (scale && this != DEFAULT && character != ' ') {
+            // Formula figured out experimentally (pain)
+            result = (int) Math.round(1.1249999d+(result-1)*height/8d);
+        }
         return result;
     }
 
     public int getWidth(String text, boolean scale) {
-        if (text.equals("")) { return 0; }
+        if (text.equals("")) { throw new IllegalArgumentException(); }
         int total = 0;
-        for (char character : text.toCharArray()) { total += getWidth(character, scale); }
+        for (Character character : text.toCharArray()) { total += getWidth(character, scale); }
         return total;
     }
 

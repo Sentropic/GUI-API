@@ -1,8 +1,10 @@
 send_period_milis: 1900
+anon_period_ticks: 20
+anon_duration_ticks: 40
 debug:
   default:
     offset: 0
-    text: "This text must start at the screen center"
+    text: "This text should start at the screen center"
     font:
       id: "minecraft:default"
     alignment: "left"

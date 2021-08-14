@@ -57,11 +57,12 @@ public class Font {
     public static void register(Font font) {
         String id = font.getID();
         if (registeredFonts.containsKey(id)) {
-            throw new IllegalArgumentException("Font \""+id+"\" already exists");
+            throw new IllegalArgumentException("Font \""+id+"\" is already registered");
         }
         registeredFonts.put(id, font);
     }
 
+    @SuppressWarnings("unused")
     public static boolean unregister(Font font) {
         boolean success = false;
         if (registeredFonts != null) { success = registeredFonts.remove(font.toString()) != null; }
@@ -98,7 +99,6 @@ public class Font {
     }
 
     public int getWidth(String text, boolean scale) {
-        if (text.equals("")) { throw new IllegalArgumentException(); }
         int total = 0;
         for (Character character : text.toCharArray()) { total += getWidth(character, scale); }
         return total;
@@ -109,5 +109,6 @@ public class Font {
 
     public String getID() { return id; }
 
+    @SuppressWarnings("unused")
     public int getHeight() { return height; }
 }

@@ -1,57 +1,97 @@
 package com.sentropic.guiapi.gui;
 
-import org.jetbrains.annotations.NotNull;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class GUIComponent {
-    private String id;
-    private final String text;
-    private final Font font;
-    private final int leftOffset;
-    private final int rightOffset;
+    private static final Set<Class<? extends BaseComponent>> validComponents = new HashSet<Class<? extends BaseComponent>>() {{
+        add(TextComponent.class);
+        // TODO see if can include Score and Selector
+        // TODO add support for bold text
+    }};
 
-    public GUIComponent(@NotNull String id,
-                        int offset,
-                        @NotNull String text,
-                        Font font,
-                        @NotNull Alignment alignment,
-                        boolean scale) {
-        this(id, offset, text, font.getWidth(text, scale), font, alignment);
+    protected final String id;
+    protected final BaseComponent component;
+    protected final int leftOffset;
+    protected final int rightOffset;
+
+    public GUIComponent(String id, BaseComponent component, int offset, Alignment alignment, boolean scale) {
+        this(id, component, getWidth(component, scale), offset, alignment);
     }
 
-    public GUIComponent(@NotNull String id,
-                        int offset,
-                        @NotNull String text,
-                        int width,
-                        Font font,
-                        @NotNull Alignment alignment) {
+    public GUIComponent(String id, BaseComponent component, int width, int offset, Alignment alignment) {
+        check(component);
         this.id = id;
-        this.text = text;
-        this.font = font;
+        this.component = component.duplicate();
+        int[] spaces = spacesFor(width, offset, alignment);
+        leftOffset = spaces[0];
+        rightOffset = spaces[1];
+    }
+
+    public static void check(BaseComponent component) {
+        if (component.isBold() || !validComponents.contains(component.getClass())) {
+            throw new IllegalArgumentException();
+        }
+        List<BaseComponent> extras = component.getExtra();
+        if (extras != null) {
+            for (BaseComponent extra : extras) {
+                if (extra == component) { throw new IllegalArgumentException(); }
+                check(extra);
+            }
+        }
+    }
+
+    public static int getWidth(BaseComponent component, boolean scale) {
+        int result = 0;
+        Font font = Font.getRegistered(component.getFont());
+        if (font == null) { font = Font.DEFAULT; }
+        if (component instanceof TextComponent) {
+            TextComponent textComponent = (TextComponent) component;
+            result += font.getWidth(textComponent.getText(), scale);
+        }
+        List<BaseComponent> extras = component.getExtra();
+        if (extras != null) {
+            for (BaseComponent extra : extras) {
+                result += getWidth(extra, scale);
+            }
+        }
+        return result;
+    }
+
+    public static int[] spacesFor(int width, int offset, Alignment alignment) {
+        int[] result = new int[2];
         switch (alignment) {
             case LEFT:
-                this.leftOffset = offset;
-                this.rightOffset = -offset-width;
+                result[0] = offset;
+                result[1] = -offset-width;
                 break;
             case RIGHT:
-                this.leftOffset = offset-width;
-                this.rightOffset = -offset;
+                result[0] = offset-width;
+                result[1] = -offset;
                 break;
             case CENTER:
-                this.leftOffset = offset-width/2;
-                this.rightOffset = -this.leftOffset-width;
+                result[0] = offset-width/2;
+                result[1] = -result[0]-width;
                 break;
             default:
                 throw new IllegalArgumentException();
         }
+        return result;
     }
 
     public String getID() { return id; }
 
-    public String getText() { return text; }
-
-    public Font getFont() { return font == null ? Font.DEFAULT : font; }
+    BaseComponent getComponent() { return component; }
 
     public int getLeftOffset() { return leftOffset; }
 
     public int getRightOffset() { return rightOffset; }
+
+    public void onAdd(GUI gui) { }
+
+    public void onRemove(GUI gui) { }
 }

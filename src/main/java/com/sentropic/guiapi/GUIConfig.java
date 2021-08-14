@@ -4,6 +4,7 @@ import com.sentropic.guiapi.gui.Alignment;
 import com.sentropic.guiapi.gui.Font;
 import com.sentropic.guiapi.gui.GUI;
 import com.sentropic.guiapi.gui.GUIComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -13,7 +14,9 @@ import java.util.List;
 import java.util.Objects;
 
 public class GUIConfig {
-    private int period;
+    private int sendPeriod;
+    private int anonPeriod;
+    private int anonDuration;
     private final List<GUIComponent> debugComponents = new ArrayList<>();
     private final List<GUIComponent> debugComponentsRead = Collections.unmodifiableList(debugComponents);
 
@@ -23,7 +26,9 @@ public class GUIConfig {
         GUIAPI plugin = GUIAPI.getPlugin();
         plugin.reloadConfig();
         FileConfiguration configFile = plugin.getConfig();
-        period = configFile.getInt("send_period_milis", 1900);
+        sendPeriod = configFile.getInt("send_period_milis", 1900);
+        anonPeriod = configFile.getInt("anon_period_ticks", 20);
+        anonDuration = configFile.getInt("anon_duration_ticks", 40);
 
         // Debug components
         {
@@ -36,7 +41,7 @@ public class GUIConfig {
                         ConfigurationSection fontSection = Objects.requireNonNull(componentSection.getConfigurationSection("font"));
 
                         String id = GUI.ID_DEBUG+componentKey;
-                        int offset = componentSection.getInt("offset");
+                        int offset = componentSection.getInt("offset", 0);
                         String text = Objects.requireNonNull(componentSection.getString("text"));
                         int width = componentSection.getInt("width", -1);
 
@@ -47,27 +52,27 @@ public class GUIConfig {
                                 Objects.requireNonNull(componentSection.getString("alignment")).toUpperCase());
                         boolean scale = componentSection.getBoolean("scale", true);
 
+                        TextComponent textComponent = new TextComponent(text);
+                        textComponent.setFont(font.getID());
                         GUIComponent component;
                         if (width == -1) {
-                            component = new GUIComponent(id, offset, text, font, alignment, scale);
+                            component = new GUIComponent(id, textComponent, font.getWidth(text, scale), offset, alignment);
                         } else {
-                            component = new GUIComponent(id, offset, text, width, font, alignment);
+                            component = new GUIComponent(id, textComponent, width, offset, alignment);
                         }
                         debugComponents.add(component);
                     } catch (NullPointerException | IllegalArgumentException ignored) { }
                 }
             }
-            // Update
-            for (GUI gui : GUIAPI.getGUIManager().getGUIS().values()) {
-                if (gui.isDebugging()) {
-                    gui.setDebug(false);
-                    gui.setDebug(true);
-                }
-            }
+            GUIAPI.getGUIManager().getGUIS().values().forEach(GUI::onReload);
         }
     }
 
-    public int getSendPeriod() { return period; }
+    public int getSendPeriod() { return sendPeriod; }
+
+    public int getAnonPeriod() { return anonPeriod; }
+
+    public int getAnonDuration() { return anonDuration; }
 
     public List<GUIComponent> getDebugComponents() { return debugComponentsRead; }
 }

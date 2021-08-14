@@ -86,7 +86,7 @@ public class GUI {
     }
 
     @SuppressWarnings("unused")
-    private boolean update(@NotNull GUIComponent component) {
+    public boolean update(@NotNull GUIComponent component) {
         boolean success = false;
         String id = component.getID();
         checkID(id);

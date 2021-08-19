@@ -29,12 +29,12 @@ public class PacketManager extends PacketAdapter {
     @Override
     public void onPacketSending(PacketEvent event) {
         if (event.isCancelled()) { return; }
-        PacketContainer packetContainer = event.getPacket();
+        PacketContainer packet = event.getPacket();
         if (!GUI.isSending()) {
-            WrapperPlayServerTitle packet = new WrapperPlayServerTitle(packetContainer);
-            if (packet.getAction().equals(EnumWrappers.TitleAction.ACTIONBAR) && !GUI.isSending()) {
+            if (packet.getTitleActions().read(0).equals(EnumWrappers.TitleAction.ACTIONBAR)
+                    && !GUI.isSending()) {
                 boolean success = GUIAPI.getGUIManager().getGUI(event.getPlayer()).addAnonComponent(
-                        ComponentSerializer.parse(packet.getTitle().getJson())[0]);
+                        ComponentSerializer.parse(packet.getChatComponents().read(0).getJson())[0]);
                 event.setCancelled(success);
             }
         }

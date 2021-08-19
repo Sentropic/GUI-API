@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.sentropic.guiapi</groupId>
-    <artifactId>GUI-API</artifactId>
-    <version>1.0-alpha.1</version>
+    <artifactId>GUI_API</artifactId>
+    <version>1.0</version>
     <packaging>jar</packaging>
 
     <name>GUI API</name>

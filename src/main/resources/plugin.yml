@@ -7,5 +7,5 @@ authors: [Sentropic]
 commands:
   guiapi:
     description: Main plugin command
-    usage: /guiapi reload
-    permission: guiapi.command.reload
+    usage: /guiapi reload, /guiapi debug
+    permission: guiapi.command.reload, guiapi.command.debug

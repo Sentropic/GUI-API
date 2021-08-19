@@ -13,6 +13,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Represents the config options of the plugin
+ * For efficiency, use instead of directly getting the config file from the plugin
+ */
 public class GUIConfig {
     private int sendPeriod;
     private int anonPeriod;
@@ -22,6 +26,9 @@ public class GUIConfig {
 
     GUIConfig() { reload(); }
 
+    /**
+     * Reloads the plugin's config and stores all its values
+     */
     public void reload() {
         GUIAPI plugin = GUIAPI.getPlugin();
         plugin.reloadConfig();
@@ -68,11 +75,31 @@ public class GUIConfig {
         }
     }
 
+    /**
+     * @return the maximum delay between sending GUIs to players, in milisecons
+     */
     public int getSendPeriod() { return sendPeriod; }
 
+    /**
+     * Gets the amount of ticks that each anonymous action bar text (sent without the usage of GUIAPI)
+     * is shown in the GUI before switching to a different one, if more than one is available
+     *
+     * @return the period at which anonymous action bar texts are cycled around in the GUI
+     */
     public int getAnonPeriod() { return anonPeriod; }
 
+    /**
+     * Gets the amount of ticks that each anonymous action bar text (sent without the usage of GUIAPI)
+     * remains in memory before being removed (defaults to 40 in vanilla Minecraft)
+     *
+     * @return the duration of anonymous action bars
+     */
     public int getAnonDuration() { return anonDuration; }
 
+    /**
+     * Gets the debug {@link GUIComponent}s defined in the config
+     *
+     * @return a {@link List} containing the debug {@link GUIComponent}s defined in the config, in typing order
+     */
     public List<GUIComponent> getDebugComponents() { return debugComponentsRead; }
 }

@@ -11,6 +11,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.function.Predicate;
 
+/**
+ * Represents the GUI of a specific {@link Player}, and all the visual components that make it up
+ */
 public class GUI {
 
     // Storage
@@ -60,16 +63,25 @@ public class GUI {
     private final Player player;
     private final List<GUIComponent> guiComponents = new ArrayList<>();
 
-    public GUI(Player player) {
+    GUI(Player player) {
         this.player = player;
         guiComponents.add(defaultComponent);
     }
 
+    /**
+     * Gets the owner of this GUI
+     * @return the {@link Player} to whom this GUI belongs to
+     */
     @SuppressWarnings("unused")
     public Player getPlayer() { return player; }
 
     // Editing methods
 
+    /**
+     * Adds the given {@link GUIComponent} to the GUI after all previously added GUIComponents,
+     * and removes any other component with the same ID as the given one
+     * @param component the GUIComponent to add to the GUI
+     */
     public void putOnTop(@NotNull GUIComponent component) {
         remove(component.getID());
         guiComponents.add(component);
@@ -77,6 +89,11 @@ public class GUI {
         component.onAdd(this);
     }
 
+    /**
+     * Adds the given {@link GUIComponent} to the GUI before all previously added GUIComponents,
+     * and removes any other component with the same ID as the given one
+     * @param component the GUIComponent to add to the GUI
+     */
     @SuppressWarnings("unused")
     public void putUnderneath(@NotNull GUIComponent component) {
         remove(component.getID());
@@ -85,6 +102,12 @@ public class GUI {
         component.onAdd(this);
     }
 
+    /**
+     * If a {@link GUIComponent} exists with an ID matching the one of the given component,
+     * removes it and puts the given one in its place
+     * @param component the GUIComponent to add to the GUI
+     * @return whether the component could be added
+     */
     @SuppressWarnings("unused")
     public boolean update(@NotNull GUIComponent component) {
         boolean success = false;
@@ -104,6 +127,12 @@ public class GUI {
         return success;
     }
 
+    /**
+     * If a {@link GUIComponent} exists with an ID matching the given id,
+     * adds the provided component after it, and removes any other component with the same ID as it
+     * @param component the GUIComponent to add to the GUI
+     * @return whether the component could be added
+     */
     @SuppressWarnings("unused")
     public boolean putAfter(String id, @NotNull GUIComponent component) {
         boolean success = false;
@@ -122,6 +151,12 @@ public class GUI {
         return success;
     }
 
+    /**
+     * If a {@link GUIComponent} exists with an ID matching the given id,
+     * adds the provided component} before it, and removes any other component with the same ID as it
+     * @param component the GUIComponent to add to the GUI
+     * @return whether the component could be added
+     */
     @SuppressWarnings("unused")
     public boolean putBefore(String before, @NotNull GUIComponent component) {
         boolean success = false;
@@ -140,12 +175,21 @@ public class GUI {
         return success;
     }
 
+    /**
+     * If a {@link GUIComponent} exists with an ID matching the given id, removes it from the GUI
+     * @return whether a component with a matching id was removed
+     */
     @SuppressWarnings("UnusedReturnValue")
     public boolean remove(String id) {
         checkID(id);
         return removeIf(component -> component.getID().equals(id));
     }
 
+    /**
+     * Removes any {@link GUIComponent}s that meet a given predicate from the GUI
+     * @param predicate the predicate that to-be-removed {@link GUIComponent}s must meet
+     * @return whether any {@link GUIComponent}s were removed
+     */
     public boolean removeIf(Predicate<GUIComponent> predicate) {
         boolean success = false;
         for (Iterator<GUIComponent> iterator = guiComponents.iterator(); iterator.hasNext(); ) {
@@ -172,8 +216,16 @@ public class GUI {
 
     private boolean debug = false;
 
+    /**
+     * Gets whether this GUI is in debug mode (displaying the debug {@link GUIComponent}s defined in the plugin's config)
+     * @return whether this GUI is in debug mode
+     */
     public boolean isDebugging() { return debug; }
 
+    /**
+     * Sets this GUI to debug mode if debug is true, or disables it otherwise
+     * @param debug whether to put the GUI in debug mode or not
+     */
     public void setDebug(boolean debug) {
         if (this.debug == debug) { return; } else {
             this.debug = debug;
@@ -200,15 +252,19 @@ public class GUI {
                 guiComponent = anonComponent;
             }
 
-            offset += guiComponent.getLeftOffset();
+            offset += guiComponent.getLeftSpaces();
             if (offset != 0) { gui.addExtra(new TextComponent(spacesOf(offset))); }
             gui.addExtra(guiComponent.getComponent());
-            offset = guiComponent.getRightOffset();
+            offset = guiComponent.getRightSpaces();
         }
         if (offset != 0) { gui.addExtra(new TextComponent(spacesOf(offset))); }
         changed = false;
     }
 
+    /**
+     * Plays the GUI to its {@link Player}. This is already done automatically by {@link GUIAPI}
+     * No need to call manually under normal usage conditions
+     */
     public void play() {
         long time = System.currentTimeMillis();
         boolean play = changed || time-lastSend >= GUIAPI.getGUIConfig().getSendPeriod();
@@ -221,6 +277,10 @@ public class GUI {
         }
     }
 
+    /**
+     * For internal use only
+     * Code ran when {@link GUIAPI} is reloaded
+     */
     public void onReload() {
         // Update anon period
         anonCycler.reschedule();
@@ -244,6 +304,13 @@ public class GUI {
     private AnonComponent anonComponent = null;
     private final AnonCycler anonCycler = new AnonCycler();
 
+    /**
+     * Adds an {@link AnonComponent} containing the given baseComponent
+     * Because the content of other {@link BaseComponent} implementations are unknown to the server,
+     * only supports {@link TextComponent} at this moment
+     * @param baseComponent the anonymous chat component to add to the GUI
+     * @return whether the given baseComponent was of the supported types and could be added
+     */
     public boolean addAnonComponent(BaseComponent baseComponent) {
         String text = baseComponent.toPlainText();
         for (AnonComponent otherComponent : anonComponents) {
@@ -265,6 +332,10 @@ public class GUI {
         return true;
     }
 
+    /**
+     * Removes the given anonymous component from the GUI
+     * @param component the anonymous component to remove
+     */
     public void removeAnonComponent(AnonComponent component) {
         anonComponents.remove(component);
         if (anonComponent == component) {
@@ -321,8 +392,18 @@ public class GUI {
 
     private static boolean sending = false;
 
+    /**
+     * Used to distinguish between action bar text sent by {@link GUIAPI} and those send anonymously
+     * @return whether {@link GUIAPI} is sending an action bar packet at the moment of calling
+     */
     public static boolean isSending() { return sending; }
 
+    /**
+     * Builds a {@link String} containing the specified amount of space,
+     * from space characters provided by AmberW's Negative Space resource pack
+     * @param amount the amount of space to generate the string for, whether positive, negative or zero
+     * @return the built {@link String} containing the specified amount of space
+     */
     public static String spacesOf(int amount) {
         Map<Integer,String> spaces;
         if (amount == 0) { return ""; } else if (amount > 0) { spaces = POS_SPACES; } else {

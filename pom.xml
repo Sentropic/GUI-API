@@ -6,7 +6,7 @@
 
     <groupId>com.sentropic.guiapi</groupId>
     <artifactId>GUI_API</artifactId>
-    <version>1.0</version>
+    <version>1.1-beta.0</version>
     <packaging>jar</packaging>
 
     <name>GUI API</name>

@@ -59,8 +59,7 @@ public class GUIConfig {
                                 Objects.requireNonNull(componentSection.getString("alignment")).toUpperCase());
                         boolean scale = componentSection.getBoolean("scale", true);
 
-                        TextComponent textComponent = new TextComponent(text);
-                        textComponent.setFont(font.getID());
+                        TextComponent textComponent = GUIComponent.createTextComponent(text, font.getID());
                         GUIComponent component;
                         if (width == -1) {
                             component = new GUIComponent(id, textComponent, font.getWidth(text, scale), offset, alignment);

@@ -2,6 +2,8 @@ package com.sentropic.guiapi.gui;
 
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.List;
@@ -149,4 +151,19 @@ public class GUIComponent {
     void onAdd(GUI gui) { }
 
     void onRemove(GUI gui) { }
+
+    /**
+     * Creates a text component using the given text and font.
+     * Use inside the GUIComponent constructor to create it with a single statement.
+     * @param text the text contained by the TextComponent
+     * @param font the namespaced font ID to use for the text, as used in the resource pack
+     * @return a new TextComponent with the provided text and font
+     */
+    @NotNull
+    public static TextComponent createTextComponent(@Nullable String text, @Nullable String font) {
+        if (text == null) { text = ""; }
+        TextComponent textComponent = new TextComponent(text);
+        textComponent.setFont(font);
+        return textComponent;
+    }
 }

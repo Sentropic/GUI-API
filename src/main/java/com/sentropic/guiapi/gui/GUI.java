@@ -1,6 +1,7 @@
 package com.sentropic.guiapi.gui;
 
 import com.sentropic.guiapi.GUIAPI;
+import com.sentropic.guiapi.GUIManager;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -63,13 +64,22 @@ public class GUI {
     private final Player player;
     private final List<GUIComponent> guiComponents = new ArrayList<>();
 
-    GUI(Player player) {
+
+    /**
+     * Important: If you need to get a player's GUI, use {@link GUIManager#getGUI(Player)},
+     * since GUIs created through this constructor will not be processed.
+     *
+     * @param player the player the GUI belongs to.
+     */
+    @Deprecated
+    public GUI(Player player) {
         this.player = player;
         guiComponents.add(defaultComponent);
     }
 
     /**
      * Gets the owner of this GUI
+     *
      * @return the {@link Player} to whom this GUI belongs to
      */
     @SuppressWarnings("unused")
@@ -80,6 +90,7 @@ public class GUI {
     /**
      * Adds the given {@link GUIComponent} to the GUI after all previously added GUIComponents,
      * and removes any other component with the same ID as the given one
+     *
      * @param component the GUIComponent to add to the GUI
      */
     public void putOnTop(@NotNull GUIComponent component) {
@@ -92,6 +103,7 @@ public class GUI {
     /**
      * Adds the given {@link GUIComponent} to the GUI before all previously added GUIComponents,
      * and removes any other component with the same ID as the given one
+     *
      * @param component the GUIComponent to add to the GUI
      */
     @SuppressWarnings("unused")
@@ -105,6 +117,7 @@ public class GUI {
     /**
      * If a {@link GUIComponent} exists with an ID matching the one of the given component,
      * removes it and puts the given one in its place
+     *
      * @param component the GUIComponent to add to the GUI
      * @return whether the component could be added
      */
@@ -130,6 +143,7 @@ public class GUI {
     /**
      * If a {@link GUIComponent} exists with an ID matching the given id,
      * adds the provided component after it, and removes any other component with the same ID as it
+     *
      * @param component the GUIComponent to add to the GUI
      * @return whether the component could be added
      */
@@ -154,6 +168,7 @@ public class GUI {
     /**
      * If a {@link GUIComponent} exists with an ID matching the given id,
      * adds the provided component} before it, and removes any other component with the same ID as it
+     *
      * @param component the GUIComponent to add to the GUI
      * @return whether the component could be added
      */
@@ -177,6 +192,7 @@ public class GUI {
 
     /**
      * If a {@link GUIComponent} exists with an ID matching the given id, removes it from the GUI
+     *
      * @return whether a component with a matching id was removed
      */
     @SuppressWarnings("UnusedReturnValue")
@@ -187,6 +203,7 @@ public class GUI {
 
     /**
      * Removes any {@link GUIComponent}s that meet a given predicate from the GUI
+     *
      * @param predicate the predicate that to-be-removed {@link GUIComponent}s must meet
      * @return whether any {@link GUIComponent}s were removed
      */
@@ -218,12 +235,14 @@ public class GUI {
 
     /**
      * Gets whether this GUI is in debug mode (displaying the debug {@link GUIComponent}s defined in the plugin's config)
+     *
      * @return whether this GUI is in debug mode
      */
     public boolean isDebugging() { return debug; }
 
     /**
      * Sets this GUI to debug mode if debug is true, or disables it otherwise
+     *
      * @param debug whether to put the GUI in debug mode or not
      */
     public void setDebug(boolean debug) {
@@ -308,6 +327,7 @@ public class GUI {
      * Adds an {@link AnonComponent} containing the given baseComponent
      * Because the content of other {@link BaseComponent} implementations are unknown to the server,
      * only supports {@link TextComponent} at this moment
+     *
      * @param baseComponent the anonymous chat component to add to the GUI
      * @return whether the given baseComponent was of the supported types and could be added
      */
@@ -334,6 +354,7 @@ public class GUI {
 
     /**
      * Removes the given anonymous component from the GUI
+     *
      * @param component the anonymous component to remove
      */
     public void removeAnonComponent(AnonComponent component) {
@@ -394,6 +415,7 @@ public class GUI {
 
     /**
      * Used to distinguish between action bar text sent by {@link GUIAPI} and those send anonymously
+     *
      * @return whether {@link GUIAPI} is sending an action bar packet at the moment of calling
      */
     public static boolean isSending() { return sending; }
@@ -401,6 +423,7 @@ public class GUI {
     /**
      * Builds a {@link String} containing the specified amount of space,
      * from space characters provided by AmberW's Negative Space resource pack
+     *
      * @param amount the amount of space to generate the string for, whether positive, negative or zero
      * @return the built {@link String} containing the specified amount of space
      */

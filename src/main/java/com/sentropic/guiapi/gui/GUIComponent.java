@@ -22,29 +22,28 @@ public class GUIComponent {
     protected final int right;
 
     /**
-     * @param id the identifier of this GUIComponent
+     * @param id        the identifier of this GUIComponent
      * @param component the {@link BaseComponent} containing the text and formatting of this GUIComponent
-     * @param offset the lateral offset of this GUIComponent in the player's screen
+     * @param offset    the lateral offset of this GUIComponent in the player's screen
      * @param alignment the alignment to set this GUIComponent to,
      *                  whether {@link Alignment#LEFT}, {@link Alignment#RIGHT} or {@link Alignment#CENTER}
-     * @param scale whether the text in the provided {@link BaseComponent} should be scaled according to its fonts
+     * @param scale     whether the text in the provided {@link BaseComponent} should be scaled according to its fonts
      * @throws IllegalArgumentException if the provided {@link BaseComponent} is not supported,
-     * according to the criteria of {@link GUIComponent#check(BaseComponent)}
+     *                                  according to the criteria of {@link GUIComponent#check(BaseComponent)}
      */
     public GUIComponent(String id, BaseComponent component, int offset, Alignment alignment, boolean scale) {
         this(id, component, getWidth(component, scale), offset, alignment);
     }
 
     /**
-     *
-     * @param id the identifier of this GUIComponent
+     * @param id        the identifier of this GUIComponent
      * @param component the {@link BaseComponent} containing the text and formatting of this GUIComponent
-     * @param width the total width of the provided {@link BaseComponent} in the player's screen
-     * @param offset the lateral offset of this GUIComponent in the player's screen
+     * @param width     the total width of the provided {@link BaseComponent} in the player's screen
+     * @param offset    the lateral offset of this GUIComponent in the player's screen
      * @param alignment the alignment to set this GUIComponent to,
      *                  whether {@link Alignment#LEFT}, {@link Alignment#RIGHT} or {@link Alignment#CENTER}
      * @throws IllegalArgumentException if the provided {@link BaseComponent} is not supported,
-     * according to the criteria of {@link GUIComponent#check(BaseComponent)}
+     *                                  according to the criteria of {@link GUIComponent#check(BaseComponent)}
      */
     public GUIComponent(String id, BaseComponent component, int width, int offset, Alignment alignment) {
         check(component);
@@ -58,6 +57,7 @@ public class GUIComponent {
     /**
      * Checks whether the given {@link BaseComponent} is supported
      * (contains components only of type {@link TextComponent} and non-bold text)
+     *
      * @param component the component to be checked
      */
     public static void check(BaseComponent component) {
@@ -75,8 +75,9 @@ public class GUIComponent {
 
     /**
      * Calculates the width the given {@link BaseComponent} would have in-screen
+     *
      * @param component the component to calculate the width for
-     * @param scale whether the component's text should be scaled according to its fonts
+     * @param scale     whether the component's text should be scaled according to its fonts
      * @return the calculated width the component would have in-screen
      */
     public static int getWidth(BaseComponent component, boolean scale) {
@@ -99,8 +100,9 @@ public class GUIComponent {
     /**
      * Calculates the amount of space to be placed before and after a {@link GUIComponent},
      * given its width, lateral offset and {@link Alignment}
-     * @param width the width of the component
-     * @param offset the lateral offset of the component
+     *
+     * @param width     the width of the component
+     * @param offset    the lateral offset of the component
      * @param alignment the alignment of the component,
      *                  whether {@link Alignment#LEFT}, {@link Alignment#RIGHT} or {@link Alignment#CENTER}
      * @return an 2 int array containing the left side spaces in its first index, and the right side spaces in its second
@@ -128,12 +130,14 @@ public class GUIComponent {
 
     /**
      * Gets the ID of this component
+     *
      * @return the {@link String} representing the component's ID
      */
     public String getID() { return id; }
 
     /**
      * For internal ose only. Must not be modified
+     *
      * @return the {@link BaseComponent} contained by this GUIComponent
      */
     BaseComponent getComponent() { return component; }
@@ -155,6 +159,7 @@ public class GUIComponent {
     /**
      * Creates a text component using the given text and font.
      * Use inside the GUIComponent constructor to create it with a single statement.
+     *
      * @param text the text contained by the TextComponent
      * @param font the namespaced font ID to use for the text, as used in the resource pack
      * @return a new TextComponent with the provided text and font

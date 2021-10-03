@@ -23,7 +23,7 @@ public class ReloadCommand implements CommandExecutor {
                 GUI gui = GUIAPI.getGUIManager().getGUI((Player) sender);
                 gui.setDebug(!gui.isDebugging());
                 return true;
-            } else { sender.sendMessage("Command only runnable ingame"); }
+            } else { sender.sendMessage("Command only runnable in-game"); }
         }
         return false;
     }

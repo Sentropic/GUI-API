@@ -1,23 +1,24 @@
-package com.sentropic.guiapi.gui;
+package com.sentropic.guiapi;
 
-import com.sentropic.guiapi.GUIAPI;
+import com.sentropic.guiapi.gui.GUI;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Class in charge of storing, accessing and updating the {@link Player}s' {@link GUI}
  * To access the instance used by the plugin, use {@link GUIAPI#getGUIManager()}
  */
 public class GUIManager implements Listener {
-    private final Map<Player,GUI> GUIS = new HashMap<>();
-    private final Map<Player,GUI> GUIS_READ = Collections.unmodifiableMap(GUIS);
+    private static final String METADATA_KEY = "guiapi:gui";
+
+    final Set<GUI> GUIS = new HashSet<>();
     private final Task task = new Task();
 
     /**
@@ -28,40 +29,41 @@ public class GUIManager implements Listener {
     /**
      * For internal use only. Used to clear the stored {@link GUI}s from memory and cancel GUI updating
      */
-    public void disable() {
+    void disable() {
         try {
             task.cancel();
+            for (GUI gui : GUIS) {
+                gui.getPlayer().removeMetadata(METADATA_KEY, GUIAPI.getPlugin());
+            }
             GUIS.clear();
         } catch (IllegalStateException ignored) { }
     }
 
     /**
      * Gets the {@link GUI} of a given {@link Player}
+     *
      * @param player the {@link Player} to get the {@link GUI} for
      * @return the existing {@link GUI} of the {@link Player}, or a new one if nonexistent
      */
     public GUI getGUI(Player player) {
-        GUI gui = GUIS.get(player);
-        if (gui == null) {
+        GUI gui;
+        if (player.hasMetadata(METADATA_KEY)) {
+            gui = (GUI) player.getMetadata(METADATA_KEY).get(0).value();
+        } else {
             gui = new GUI(player);
-            GUIS.put(player, gui);
+            GUIS.add(gui);
+            player.setMetadata(METADATA_KEY, new FixedMetadataValue(GUIAPI.getPlugin(), gui));
         }
         return gui;
     }
 
-    /**
-     * @return a read-only {@link Map} containing all {@link Player}s who have a {@link GUI},
-     *      * and the respective GUIs
-     */
-    public Map<Player,GUI> getGUIS() { return GUIS_READ; }
-
     @EventHandler
-    public void onPlayerLeave(PlayerQuitEvent event) { GUIS.remove(event.getPlayer()); }
+    public void onPlayerLeave(PlayerQuitEvent event) { GUIS.remove(this.getGUI(event.getPlayer())); }
 
     private class Task extends BukkitRunnable {
         @Override
         public void run() {
-            GUIS.values().forEach(GUI::play);
+            GUIS.forEach(GUI::play);
         }
     }
 }

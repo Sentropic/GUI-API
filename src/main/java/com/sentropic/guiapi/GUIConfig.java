@@ -70,7 +70,7 @@ public class GUIConfig {
                     } catch (NullPointerException | IllegalArgumentException ignored) { }
                 }
             }
-            GUIAPI.getGUIManager().getGUIS().values().forEach(GUI::onReload);
+            GUIAPI.getGUIManager().GUIS.forEach(GUI::onReload);
         }
     }
 

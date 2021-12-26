@@ -1,5 +1,5 @@
 name: GUIAPI
-version: 1.1.1
+version: 1.2
 main: com.sentropic.guiapi.GUIAPI
 api-version: 1.16
 softdepend: [ProtocolLib]

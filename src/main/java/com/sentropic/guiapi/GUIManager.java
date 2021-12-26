@@ -4,6 +4,7 @@ import com.sentropic.guiapi.gui.GUI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -59,14 +60,14 @@ public class GUIManager implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerLeave(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         GUIS.remove(this.getGUI(player));
         player.removeMetadata(METADATA_KEY, GUIAPI.getPlugin());
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerJoin(PlayerJoinEvent event) {
         createGUI(event.getPlayer());
     }

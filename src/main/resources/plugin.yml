@@ -8,4 +8,8 @@ commands:
   guiapi:
     description: Main plugin command
     usage: /guiapi reload, /guiapi debug
-    permission: guiapi.command.reload, guiapi.command.debug
+    permission: guiapi.command
+permissions:
+  guiapi.command:
+    description: Gives access to /guiapi command
+    default: false

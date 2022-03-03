@@ -2,7 +2,6 @@ package com.sentropic.guiapi;
 
 import com.sentropic.guiapi.command.ReloadCommand;
 import com.sentropic.guiapi.gui.GUI;
-import com.sentropic.guiapi.packet.PacketManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -74,7 +73,7 @@ public final class GUIAPI extends JavaPlugin implements Listener {
     private void setProtocolLib(boolean enabled) {
         if ((packetManager != null) == enabled) { return; }
         if (enabled) {
-            packetManager = new PacketManager();
+            packetManager = new PacketManager(this);
         } else {
             packetManager.disable();
             packetManager = null;

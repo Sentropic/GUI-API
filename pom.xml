@@ -6,7 +6,7 @@
 
     <groupId>com.sentropic.guiapi</groupId>
     <artifactId>GUI_API</artifactId>
-    <version>1.2</version>
+    <version>1.2.1</version>
     <packaging>jar</packaging>
 
     <name>GUI API</name>
@@ -76,13 +76,13 @@
         <dependency>
             <groupId>com.github.dmulloy2</groupId>
             <artifactId>ProtocolLib</artifactId>
-            <version>7bac4ec634</version>
+            <version>4.7.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations-java5</artifactId>
-            <version>21.0.1</version>
+            <version>22.0.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

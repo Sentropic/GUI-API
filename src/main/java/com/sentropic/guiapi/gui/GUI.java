@@ -24,39 +24,39 @@ public class GUI {
     private static final GUIComponent defaultComponent =
             new GUIComponent(ID_DEFAULT, new TextComponent(), 0, Alignment.LEFT, false);
 
-    public static final Map<Integer,String> POS_SPACES = Collections.unmodifiableMap(new HashMap<Integer,String>() {{
-        put(1024, "\uF82F");
-        put(512, "\uF82E");
-        put(256, "\uF82D");
-        put(128, "\uF82C");
-        put(64, "\uF82B");
-        put(32, "\uF82A");
-        put(16, "\uF829");
-        put(8, "\uF828");
-        put(7, "\uF827");
-        put(6, "\uF826");
-        put(5, "\uF825");
-        put(4, "\uF824");
-        put(3, "\uF823");
-        put(2, "\uF822");
-        put(1, "\uF821");
+    public static final Map<Integer,Character> POS_SPACES = Collections.unmodifiableMap(new HashMap<Integer,Character>() {{
+        put(1024, '\uF82F');
+        put(512, '\uF82E');
+        put(256, '\uF82D');
+        put(128, '\uF82C');
+        put(64, '\uF82B');
+        put(32, '\uF82A');
+        put(16, '\uF829');
+        put(8, '\uF828');
+        put(7, '\uF827');
+        put(6, '\uF826');
+        put(5, '\uF825');
+        put(4, '\uF824');
+        put(3, '\uF823');
+        put(2, '\uF822');
+        put(1, '\uF821');
     }});
-    public static final Map<Integer,String> NEG_SPACES = Collections.unmodifiableMap(new HashMap<Integer,String>() {{
-        put(1, "\uF801");
-        put(2, "\uF802");
-        put(3, "\uF803");
-        put(4, "\uF804");
-        put(5, "\uF805");
-        put(6, "\uF806");
-        put(7, "\uF807");
-        put(8, "\uF808");
-        put(16, "\uF809");
-        put(32, "\uF80A");
-        put(64, "\uF80B");
-        put(128, "\uF80C");
-        put(256, "\uF80D");
-        put(512, "\uF80E");
-        put(1024, "\uF80F");
+    public static final Map<Integer,Character> NEG_SPACES = Collections.unmodifiableMap(new HashMap<Integer,Character>() {{
+        put(1, '\uF801');
+        put(2, '\uF802');
+        put(3, '\uF803');
+        put(4, '\uF804');
+        put(5, '\uF805');
+        put(6, '\uF806');
+        put(7, '\uF807');
+        put(8, '\uF808');
+        put(16, '\uF809');
+        put(32, '\uF80A');
+        put(64, '\uF80B');
+        put(128, '\uF80C');
+        put(256, '\uF80D');
+        put(512, '\uF80E');
+        put(1024, '\uF80F');
     }});
 
     // API code
@@ -428,7 +428,7 @@ public class GUI {
      * @return the built {@link String} containing the specified amount of space
      */
     public static String spacesOf(int amount) {
-        Map<Integer,String> spaces;
+        Map<Integer,Character> spaces;
         if (amount == 0) { return ""; } else if (amount > 0) { spaces = POS_SPACES; } else {
             amount = -amount;
             spaces = NEG_SPACES;

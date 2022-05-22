@@ -51,11 +51,11 @@ public class Font {
         DEFAULT.registerWidth('@', 7);
         DEFAULT.registerWidth('~', 7);
 
-        for (Map.Entry<Integer,String> entry : GUI.POS_SPACES.entrySet()) {
-            DEFAULT.registerWidth(entry.getValue().charAt(0), entry.getKey());
+        for (Map.Entry<Integer,Character> entry : GUI.POS_SPACES.entrySet()) {
+            DEFAULT.registerWidth(entry.getValue(), entry.getKey());
         }
-        for (Map.Entry<Integer,String> entry : GUI.NEG_SPACES.entrySet()) {
-            DEFAULT.registerWidth(entry.getValue().charAt(0), -entry.getKey());
+        for (Map.Entry<Integer,Character> entry : GUI.NEG_SPACES.entrySet()) {
+            DEFAULT.registerWidth(entry.getValue(), -entry.getKey());
         }
 
         register(DEFAULT);

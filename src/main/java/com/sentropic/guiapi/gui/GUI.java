@@ -24,7 +24,7 @@ public class GUI {
     private static final GUIComponent defaultComponent =
             new GUIComponent(ID_DEFAULT, new TextComponent(), 0, Alignment.LEFT, false);
 
-    public static final Map<Integer,Character> POS_SPACES = Collections.unmodifiableMap(new HashMap<Integer,Character>() {{
+    public static final SortedMap<Integer,Character> POS_SPACES = Collections.unmodifiableSortedMap(new TreeMap<Integer,Character>() {{
         put(1024, '\uF82F');
         put(512, '\uF82E');
         put(256, '\uF82D');
@@ -41,7 +41,7 @@ public class GUI {
         put(2, '\uF822');
         put(1, '\uF821');
     }});
-    public static final Map<Integer,Character> NEG_SPACES = Collections.unmodifiableMap(new HashMap<Integer,Character>() {{
+    public static final SortedMap<Integer,Character> NEG_SPACES = Collections.unmodifiableSortedMap(new TreeMap<Integer,Character>() {{
         put(1, '\uF801');
         put(2, '\uF802');
         put(3, '\uF803');
